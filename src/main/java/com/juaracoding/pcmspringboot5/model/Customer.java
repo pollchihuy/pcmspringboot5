@@ -1,6 +1,8 @@
 package com.juaracoding.pcmspringboot5.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Pattern;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,8 +32,15 @@ import java.util.List;
  */
 public class Customer {
 
+    @Pattern(regexp = "^[\\w]{10,20}$",message = "Error brOh format alfanumerik min 10 maks 20")
     private String nama;
     private Integer umur;
+    @Pattern(regexp = "^[\\d]{6}$",message = "Format OTP Tidak Valid")
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    //MM - bulan dalam angka
+    //MMM - bulan dalam text tapi singkatan contoh aug, jun,jul, sept
+    //MMMM - full text
+    private String otp;
 
     @JsonProperty("tanggal_lahir")
     private LocalDate tanggalLahir;

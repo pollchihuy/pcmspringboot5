@@ -28,7 +28,8 @@ public class WriteExcel {
     public void printData2() throws InterruptedException {
         for (int i = 0; i < 5; i++) {
             Thread.sleep(1000);
-            System.out.println("Detik Ke "+(i+1));
+//            System.out.println("Detik Ke "+(i+1));
+            GlobalFunction.print("Detik Ke "+(i+1));
         }
     }
 }

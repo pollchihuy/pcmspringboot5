@@ -2,6 +2,7 @@ package com.juaracoding.pcmspringboot5.controller;
 
 import com.juaracoding.pcmspringboot5.model.Customer;
 import com.juaracoding.pcmspringboot5.model.Email;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,7 +14,7 @@ public class CutomerController {
 
     // /customer
     @PostMapping
-    public Object save(@RequestBody Customer customer){
+    public Object save(@Valid @RequestBody Customer customer){
         System.out.println("Customer Name "+customer.getNama());
         System.out.println("Customer Umur "+customer.getUmur());
         System.out.println("Customer tanggalLahir "+customer.getTanggalLahir().toString());
