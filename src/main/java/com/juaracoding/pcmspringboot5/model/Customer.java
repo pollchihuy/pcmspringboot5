@@ -1,6 +1,8 @@
 package com.juaracoding.pcmspringboot5.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -32,6 +34,9 @@ import java.util.List;
  */
 public class Customer {
 
+    private Long id;
+
+//    int intX , intY , intZ ;
     @Pattern(regexp = "^[\\w]{10,20}$",message = "Error brOh format alfanumerik min 10 maks 20")
     private String nama;
     private Integer umur;
@@ -49,6 +54,14 @@ public class Customer {
     private List<Email> emailCustomer;
 
     private LevelCustomer level;
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
 
     public String getNama() {
         return nama;
