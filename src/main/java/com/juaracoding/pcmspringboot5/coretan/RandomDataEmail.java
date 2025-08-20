@@ -1,10 +1,13 @@
 package com.juaracoding.pcmspringboot5.coretan;
 
 import java.util.Random;
+import java.util.UUID;
 
 public class RandomDataEmail {
 
     public static void main(String[] args) {
+
+
         /**
          * asoij123@gmail.com
          * 1. huruf kecil (min 5 maks 20)
