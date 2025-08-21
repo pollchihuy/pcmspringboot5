@@ -5,18 +5,20 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
-@Table(name = "MstGroupMenu")
-public class GroupMenu {
+@Table(name = "LogGroupMenu")
+public class LogGroupMenu {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
     private Long id;
 
-    @Column(name = "NamaGroupMenu", nullable = false,unique = true,length = 30)
+    @Column(name = "IDGroupMenu",nullable = false)
+    private Long idGroupMenu;
+
+    @Column(name = "NamaGroupMenu", nullable = false,length = 30)
     private String nama;
 
     @Column(name = "CreatedBy",updatable = false,nullable = false)
@@ -26,12 +28,24 @@ public class GroupMenu {
     @CreationTimestamp
     private Date createdDate;
 
-    @Column(name = "ModifiedBy",insertable = false)
-    private Long modifiedBy;//updatedBy
+    @Column(name = "Flag")// i e d atau i u d
+    private Character flag;
 
-    @Column(name = "ModifiedDate",insertable = false)
-    @UpdateTimestamp
-    private Date modifiedDate;//updateAt
+    public Character getFlag() {
+        return flag;
+    }
+
+    public void setFlag(Character flag) {
+        this.flag = flag;
+    }
+
+    public Long getIdGroupMenu() {
+        return idGroupMenu;
+    }
+
+    public void setIdGroupMenu(Long idGroupMenu) {
+        this.idGroupMenu = idGroupMenu;
+    }
 
     public Long getId() {
         return id;
@@ -63,21 +77,5 @@ public class GroupMenu {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public Long getModifiedBy() {
-        return modifiedBy;
-    }
-
-    public void setModifiedBy(Long modifiedBy) {
-        this.modifiedBy = modifiedBy;
-    }
-
-    public Date getModifiedDate() {
-        return modifiedDate;
-    }
-
-    public void setModifiedDate(Date modifiedDate) {
-        this.modifiedDate = modifiedDate;
     }
 }
