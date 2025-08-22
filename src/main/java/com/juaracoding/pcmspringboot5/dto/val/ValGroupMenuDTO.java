@@ -1,14 +1,9 @@
 package com.juaracoding.pcmspringboot5.dto.val;
 
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.juaracoding.pcmspringboot5.utils.ConstantMessage;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
 public class ValGroupMenuDTO {
 
