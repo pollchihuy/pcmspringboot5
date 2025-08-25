@@ -5,6 +5,9 @@ import com.juaracoding.pcmspringboot5.dto.val.ValGroupMenuDTO;
 import com.juaracoding.pcmspringboot5.handler.ResponseHandler;
 import com.juaracoding.pcmspringboot5.service.GroupMenuService;
 import com.juaracoding.pcmspringboot5.utils.GlobalFunction;
+import com.juaracoding.pcmspringboot5.utils.GlobalResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("group-menu")
@@ -22,19 +26,19 @@ public class GroupMenuController {
     private GroupMenuService groupMenuService;
 
     @PostMapping
-    public ResponseEntity<Object> save(@Valid @RequestBody ValGroupMenuDTO valGroupMenuDTO) {
-        return groupMenuService.save(groupMenuService.mapToEntity(valGroupMenuDTO));
+    public ResponseEntity<Object> save(@Valid @RequestBody ValGroupMenuDTO valGroupMenuDTO, HttpServletRequest request) {
+        return groupMenuService.save(groupMenuService.mapToEntity(valGroupMenuDTO),request);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Object> update(@Valid @RequestBody ValGroupMenuDTO valGroupMenuDTO,
-                                         @PathVariable Long id) {
-        return groupMenuService.update(id,groupMenuService.mapToEntity(valGroupMenuDTO));
+                                         @PathVariable Long id, HttpServletRequest request) {
+        return groupMenuService.update(id,groupMenuService.mapToEntity(valGroupMenuDTO),request);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> delete(@PathVariable Long id) {
-        return groupMenuService.delete(id);
+    public ResponseEntity<Object> delete(@PathVariable Long id, HttpServletRequest request) {
+        return groupMenuService.delete(id,request);
     }
 
     /**
@@ -42,8 +46,8 @@ public class GroupMenuController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<Object> findAll(){
-        return groupMenuService.findAll();
+    public ResponseEntity<Object> findAll(HttpServletRequest request){
+        return groupMenuService.findAll(request);
     }
 
     @GetMapping("/{sort}/{sort_by}/{page}")
@@ -53,13 +57,14 @@ public class GroupMenuController {
             @PathVariable Integer page,
             @RequestParam Integer size,
             @RequestParam String  column,
-            @RequestParam String  value
+            @RequestParam String  value,
+            HttpServletRequest request
             ) {
         Boolean isSort = true;
         Pageable pageable = null;
 
         if(!GlobalFunction.checkValue(value)){
-            return new ResponseHandler().handleResponse("Anda Berniat Jahat !!", HttpStatus.BAD_REQUEST,null,"X-001");
+            return new GlobalResponse().andaBerniatJahat("TRN01FV041");
         }
         switch (sort) {
             case "asc":pageable = PageRequest.of(page, size, Sort.by(sortBy));break;
@@ -67,14 +72,38 @@ public class GroupMenuController {
             default:isSort = false;break;
         }
         if(!isSort){
-            return new ResponseHandler().handleResponse("Data Tidak Ditemukan", HttpStatus.BAD_REQUEST,null,"X-001");
+            return new GlobalResponse().dataTidakDitemukan("TRN01FV042");
         }
         if(!sortByValidation(sortBy)){
-            return new ResponseHandler().handleResponse("Data Tidak Ditemukan", HttpStatus.BAD_REQUEST,null,"X-001");
+            return new GlobalResponse().dataTidakDitemukan("TRN01FV043");
         }
+        return groupMenuService.findByParam(pageable,column,value,request);
+    }
 
-        return groupMenuService.findByParam(pageable,column,value);
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable Long id, HttpServletRequest request) {
+        return groupMenuService.findById(id,request);
+    }
 
+    @PostMapping("/upload-excel")
+    public ResponseEntity<Object> uploadExcel(@RequestParam MultipartFile file, HttpServletRequest request) {
+        return groupMenuService.uploadExcel(file,request);
+    }
+
+    @GetMapping("/excel")
+    public Object downloadExcel(
+            @RequestParam String column,
+            @RequestParam String value,
+            HttpServletRequest request,HttpServletResponse response) {
+        return groupMenuService.downloadReportExcel(column,value,request,response);
+    }
+
+    @GetMapping("/pdf")
+    public Object downloadPDF(
+            @RequestParam String column,
+            @RequestParam String value,
+            HttpServletRequest request,HttpServletResponse response) {
+        return groupMenuService.downloadReportPDF(column,value,request,response);
     }
 
     public Boolean sortByValidation(String sortBy){
