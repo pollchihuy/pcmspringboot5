@@ -27,7 +27,7 @@ public class Menu {
     private GroupMenu groupMenu;
 
     @Column(name = "CreatedBy",updatable = false,nullable = false)
-    private Long createdBy;
+    private Long createdBy=1L;
 
     @Column(name = "CreatedDate",updatable = false,nullable = false)
     @CreationTimestamp
@@ -39,6 +39,14 @@ public class Menu {
     @Column(name = "ModifiedDate",insertable = false)
     @UpdateTimestamp
     private Date modifiedDate;//updateAt
+
+    public GroupMenu getGroupMenu() {
+        return groupMenu;
+    }
+
+    public void setGroupMenu(GroupMenu groupMenu) {
+        this.groupMenu = groupMenu;
+    }
 
     public Long getId() {
         return id;

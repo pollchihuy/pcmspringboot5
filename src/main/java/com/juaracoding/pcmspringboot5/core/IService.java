@@ -1,8 +1,5 @@
 package com.juaracoding.pcmspringboot5.core;
 
-import com.juaracoding.pcmspringboot5.dto.resp.RespGroupMenuDTO;
-import com.juaracoding.pcmspringboot5.model.GroupMenu;
-import com.juaracoding.pcmspringboot5.model.LogGroupMenu;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +17,4 @@ public interface IService<T> {
     public ResponseEntity<Object> findAll(HttpServletRequest request);//031-040
     public ResponseEntity<Object> findByParam(Pageable pageable, String column, String value, HttpServletRequest request);//041-050
     public ResponseEntity<Object> findById(Long id, HttpServletRequest request);//051-060
-
-    public List<RespGroupMenuDTO> entityToDTO(List<T> list);
-    public LogGroupMenu mapToLog(T t, Character flag, Long userId);
 }
