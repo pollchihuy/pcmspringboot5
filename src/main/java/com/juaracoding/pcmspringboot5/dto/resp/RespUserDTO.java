@@ -1,6 +1,8 @@
 package com.juaracoding.pcmspringboot5.dto.resp;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDate;
 
 public class RespUserDTO {
@@ -9,12 +11,15 @@ public class RespUserDTO {
 
     private String email;
 
+    @JsonProperty("no_hp")
     private String noHp;
 
     private String password;
 
+    @JsonProperty("nama_lengkap")
     private String namaLengkap;
 
+    @JsonProperty("tanggal_lahir")
     private LocalDate tanggalLahir;
     private Integer umur;
 

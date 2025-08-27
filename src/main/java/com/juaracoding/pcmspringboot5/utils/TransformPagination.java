@@ -31,13 +31,13 @@ public class TransformPagination {
 
         Map<String,Object> m = new HashMap<String,Object>();
         m.put("content",ls);
-        m.put("total-data",page.getTotalElements());
-        m.put("total-pages",page.getTotalPages());
-        m.put("current-page",page.getNumber());
-        m.put("size-per-page",page.getSize());
-        m.put("sort-by",sortByColumn);
+        m.put("total_data",page.getTotalElements());
+        m.put("total_pages",page.getTotalPages());
+        m.put("current_page",page.getNumber());
+        m.put("size_per_page",page.getSize());
+        m.put("sort_by",sortByColumn);
         m.put("sort",sort.trim().toLowerCase());
-        m.put("column-name",column);
+        m.put("column_name",column);
         m.put("value",value==null?"":value);
         return m;
     }

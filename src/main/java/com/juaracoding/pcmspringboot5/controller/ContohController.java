@@ -1,6 +1,5 @@
 package com.juaracoding.pcmspringboot5.controller;
 
-import com.juaracoding.pcmspringboot5.config.SMTPConfig;
 import com.juaracoding.pcmspringboot5.coretan.Coba;
 import com.juaracoding.pcmspringboot5.service.Contoh2Service;
 import com.juaracoding.pcmspringboot5.service.ContohService;
@@ -76,15 +75,15 @@ public class ContohController {
         return "Selesai";
     }
 
-    @GetMapping("/callprop")
-    public String callProperties(){
-        String username = SMTPConfig.getEmailUsername();
-        String password = SMTPConfig.getEmailPassword();
-        System.out.println("Print Email Username "+ username);
-        System.out.println("Print Email Password "+password);
-
-        return "Username : "+username+" -- Password : "+password;
-    }
+//    @GetMapping("/callprop")
+//    public String callProperties(){
+//        String username = SMTPConfig.getEmailUsername();
+//        String password = SMTPConfig.getEmailPassword();
+//        System.out.println("Print Email Username "+ username);
+//        System.out.println("Print Email Password "+password);
+//
+//        return "Username : "+username+" -- Password : "+password;
+//    }
 
 
 }

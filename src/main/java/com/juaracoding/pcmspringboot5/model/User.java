@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 
 @Entity
@@ -26,7 +28,7 @@ public class User {
     @Column(name = "NoHp",nullable = false,length = 17)
     private String noHp;
     @Column(name = "TanggalLahir",nullable = false)
-    private Date tanggalLahir;
+    private LocalDate tanggalLahir;
     @Column(name = "LinkImage")
     private String linkImage;
     @Column(name = "PathImage")
@@ -124,11 +126,11 @@ public class User {
         this.noHp = noHp;
     }
 
-    public Date getTanggalLahir() {
+    public LocalDate getTanggalLahir() {
         return tanggalLahir;
     }
 
-    public void setTanggalLahir(Date tanggalLahir) {
+    public void setTanggalLahir(LocalDate tanggalLahir) {
         this.tanggalLahir = tanggalLahir;
     }
 
@@ -165,7 +167,7 @@ public class User {
     }
 
     public Integer getUmur() {
-        return umur;
+        return Period.between(tanggalLahir, LocalDate.now()).getYears();
     }
 
     public void setUmur(Integer umur) {

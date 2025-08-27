@@ -15,10 +15,10 @@ import java.time.LocalDate;
  {
  "username":"paul.321",
  "email":"paul321@gmail.com",
- "noHp":"08121314151",
+ "no_hp":"08121314151",
  "password":"Paul@1234",
  "nama_lengkap":"Paul Malau",
- "tanggal-lahir":"1995-12-12"
+ "tanggal_lahir":"1995-12-12"
  }
  */
 public class ValUserDTO {

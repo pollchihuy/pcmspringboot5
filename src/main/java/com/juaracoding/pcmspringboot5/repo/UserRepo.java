@@ -12,11 +12,11 @@ public interface UserRepo extends JpaRepository<User,Long> {
     Page<User> findByEmailContains(Pageable pageable, String nama);
     Page<User> findByNoHpContains(Pageable pageable, String nama);
     Page<User> findByUsernameContains(Pageable pageable, String nama);
-    Page<User> findByTangglLahirContains(Pageable pageable, String nama);
+//    Page<User> findByTangglLahirContains(Pageable pageable, String nama);
 
     List<User> findByNamaLengkapContains(String nama);
     List<User> findByEmailContains(String nama);
     List<User> findByNoHpContains(String nama);
     List<User> findByUsernameContains(String nama);
-    List<User> findByTangglLahirContains(String nama);
+//    List<User> findByTangglLahirContains(String nama);
 }

@@ -6,6 +6,7 @@ import com.juaracoding.pcmspringboot5.dto.resp.RespUserDTO;
 import com.juaracoding.pcmspringboot5.dto.val.ValUserDTO;
 import com.juaracoding.pcmspringboot5.model.User;
 import com.juaracoding.pcmspringboot5.repo.UserRepo;
+import com.juaracoding.pcmspringboot5.security.BcryptImpl;
 import com.juaracoding.pcmspringboot5.utils.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -191,7 +192,7 @@ public class UserService implements IService<User>, IReport<User> {
             user.setPassword(map.get("PASSWORD"));
             user.setNamaLengkap(map.get("NAMA"));
             user.setEmail(map.get("EMAIL"));
-            user.setTanggalLahir(new Date(map.get("TANGGAL LAHIR")));
+            user.setTanggalLahir(LocalDate.parse(map.get("TANGGAL LAHIR")));
             user.setNoHp(map.get("NO HP"));
             user.setCreatedBy(userId);
             list.add(user);
@@ -270,8 +271,10 @@ public class UserService implements IService<User>, IReport<User> {
     public User mapToEntity(ValUserDTO valUserDTO){
         User user = new User();
         user.setNamaLengkap(valUserDTO.getNamaLengkap());
-        user.setPassword(valUserDTO.getPassword());
+        user.setPassword(BcryptImpl.hash(valUserDTO.getUsername()+valUserDTO.getPassword()));
+        user.setUsername(valUserDTO.getUsername());
         user.setNoHp(valUserDTO.getNoHp());
+        user.setTanggalLahir(valUserDTO.getTanggalLahir());
         user.setEmail(valUserDTO.getEmail());
         return user;
     }
@@ -281,6 +284,9 @@ public class UserService implements IService<User>, IReport<User> {
         for (User user : list) {
             RespUserDTO respUserDTO = new RespUserDTO();
             respUserDTO.setNamaLengkap(user.getNamaLengkap());
+            respUserDTO.setUsername(user.getUsername());
+            respUserDTO.setTanggalLahir(user.getTanggalLahir());
+            respUserDTO.setUmur(user.getUmur());
             respUserDTO.setPassword(user.getPassword());
             respUserDTO.setId(user.getId());
             respUserDTO.setNoHp(user.getNoHp());
