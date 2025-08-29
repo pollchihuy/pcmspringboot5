@@ -1,17 +1,19 @@
 package com.juaracoding.pcmspringboot5.controller;
 
+import com.juaracoding.pcmspringboot5.config.SMTPConfig;
+import com.juaracoding.pcmspringboot5.core.SMTPCore;
 import com.juaracoding.pcmspringboot5.coretan.Coba;
 import com.juaracoding.pcmspringboot5.service.Contoh2Service;
 import com.juaracoding.pcmspringboot5.service.ContohService;
+import com.juaracoding.pcmspringboot5.utils.SendMailOTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @RequestBody
@@ -37,6 +39,41 @@ public class ContohController {
     @Value("${cumi.cumi}")
     private String propertiesCumi;
 
+
+    @GetMapping("/mail")
+    private String sendMail(@RequestParam String email){
+        String [] str = {email};
+        Random rand = new Random();
+
+        new SMTPCore().sendMailWithAttachment(str,
+                "COBA",
+                "OTP ANDA ADALAH : "+rand.nextInt(111111,999999),
+                "SSL",null);
+//        new SMTPCore().sendMailWithAttachment(
+//                str,
+//                "COBA EMAIL",
+//                null,
+//                "TLS",
+//                null
+//        );
+
+        return "OK";
+    }
+
+    @GetMapping("/mailcontent")
+    private String sendMailContent(@RequestParam String email){
+        String [] str = {email};
+        Random rand = new Random();
+//        String subject, String nama ,String email,String token,String fileHtml
+        new SendMailOTP().verifyRegisOTP(
+                "COBA DOANK",
+                "Paul C",
+                email,
+                String.valueOf(rand.nextInt(111111,999999)),
+                "ver_regis.html"
+        );
+        return "OK";
+    }
     //serverLess
     @GetMapping("/hello")
     public Map<String,Object> hello(){

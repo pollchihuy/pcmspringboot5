@@ -9,6 +9,9 @@ public class GlobalResponse {
     public ResponseEntity<Object> tidakDapatDiproses(String errorCode){
         return new ResponseHandler().handleResponse("Tidak Dapat DiProses", HttpStatus.BAD_REQUEST,null,errorCode);
     }
+    public ResponseEntity<Object> otpSalah(String errorCode){
+        return new ResponseHandler().handleResponse("Kode OTP Tidak Sesuai", HttpStatus.BAD_REQUEST,null,errorCode);
+    }
     public ResponseEntity<Object> dataTidakDitemukan(String errorCode){
         return new ResponseHandler().handleResponse("Data Tidak Ditemukan", HttpStatus.BAD_REQUEST,null,errorCode);
     }
@@ -32,6 +35,13 @@ public class GlobalResponse {
     }
     public ResponseEntity<Object> dataDitemukan(Object data){
         return new ResponseHandler().handleResponse("Data Ditemukan", HttpStatus.OK,data,null);
+    }
+
+    public ResponseEntity<Object> otpTerkirim(Object data){
+        return new ResponseHandler().handleResponse("OTP Terkirim", HttpStatus.OK,data,null);
+    }
+    public ResponseEntity<Object> regisBerhasil(){
+        return new ResponseHandler().handleResponse("Registrasi Berhasil", HttpStatus.OK,null,null);
     }
 
     public ResponseEntity<Object> formatFileHarusExcel(String errorCode){

@@ -13,5 +13,4 @@ public class Pcmspringboot5Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Pcmspringboot5Application.class, args);
 	}
-
 }

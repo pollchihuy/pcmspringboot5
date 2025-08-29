@@ -4,27 +4,59 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
-/*
-IntelliJ IDEA 2024.1.4 (Ultimate Edition)
-Build #IU-241.18034.62, built on June 21, 2024
-@Author pollc a.k.a. Paul Christian
-Java Developer
-Created on 18/08/2025 21:58
-@Last Modified 18/08/2025 21:58
-Version 1.0
-*/
 @Configuration
 @PropertySource("classpath:otherconfig.properties")
 public class OtherConfig {
 
-    private static String enablePrint;
+    private static String enableLogFile;
+    private static String enableAutomationTesting;
+    private static String smtpEnable;
+    private static String enablePrintConsole;
+    private static Integer defaultPaginationSize;
 
-    public static String getEnablePrint() {
-        return enablePrint;
+
+    public static String getEnablePrintConsole() {
+        return enablePrintConsole;
     }
 
-    @Value("${enable.print}")
-    private void setEnablePrint(String enablePrint) {
-        this.enablePrint = enablePrint;
+    @Value("${enable.print.console}")
+    private void setEnablePrintConsole(String enablePrintConsole) {
+        OtherConfig.enablePrintConsole = enablePrintConsole;
+    }
+
+    public static Integer getDefaultPaginationSize() {
+        return defaultPaginationSize;
+    }
+
+    @Value("${default.pagination.size}")
+    private void setDefaultPaginationSize(Integer defaultPaginationSize) {
+        OtherConfig.defaultPaginationSize = defaultPaginationSize;
+    }
+
+    public static String getSmtpEnable() {
+        return smtpEnable;
+    }
+
+    @Value("${smtp.enable}")
+    private void setSmtpEnable(String smtpEnable) {
+        OtherConfig.smtpEnable = smtpEnable;
+    }
+
+    public static String getEnableAutomationTesting() {
+        return enableAutomationTesting;
+    }
+
+    @Value("${enable.automation.testing}")
+    private void setEnableAutomationTesting(String enableAutomationTesting) {
+        OtherConfig.enableAutomationTesting = enableAutomationTesting;
+    }
+
+    public static String getEnableLogFile() {
+        return enableLogFile;
+    }
+
+    @Value("${enable.log.file}")
+    private void setEnableLogFile(String enableLogFile) {
+        this.enableLogFile = enableLogFile;
     }
 }
