@@ -1,5 +1,6 @@
 package com.juaracoding.pcmspringboot5.controller;
 
+import com.juaracoding.pcmspringboot5.dto.val.ValLoginDTO;
 import com.juaracoding.pcmspringboot5.dto.val.ValRegisDTO;
 import com.juaracoding.pcmspringboot5.dto.val.ValVerifyRegisDTO;
 import com.juaracoding.pcmspringboot5.service.AppDetailServices;
@@ -29,5 +30,11 @@ public class AuthController {
     public ResponseEntity<Object> verifyRegis(@Valid @RequestBody ValVerifyRegisDTO valVerifyRegisDTO,
                                         HttpServletRequest request){
         return appDetailServices.verifyRegis(appDetailServices.mapToEntity(valVerifyRegisDTO),request);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@Valid @RequestBody ValLoginDTO valLoginDTO,
+                                              HttpServletRequest request){
+        return appDetailServices.login(appDetailServices.mapToEntity(valLoginDTO),request);
     }
 }

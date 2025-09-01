@@ -24,6 +24,7 @@ public class BcryptImpl {
     public static void main(String[] args) {
 //        System.out.println(hash("GilangKeren@1234"));
 
+        System.out.println(BcryptImpl.verifyHash("gilang.321"+"Paul@1234","$2a$11$sDMdffX.mmt4xJXOBTvR/.tzlGChFRTNlafCWa/yjsYeOcUEqnEui"));
 //        System.out.println(verifyHash("paul.321"+"Paul@1234","$2a$11$hiOENl4e2BCTRKvjJOIM4eVy/DghgypcnNb9qtEEdOM1IhcM.3MKm"));
 //        System.out.println(verifyHash("gilang.321"+"Paul@1234","$2a$11$hiOENl4e2BCTRKvjJOIM4eVy/DghgypcnNb9qtEEdOM1IhcM.3MKm"));
     }

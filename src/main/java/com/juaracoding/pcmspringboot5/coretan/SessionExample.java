@@ -10,8 +10,6 @@ Created on 29/08/2025 21:18
 Version 1.0
 */
 public class SessionExample {
-
-
     public static void main(String[] args) {
 //        1756477142236
 

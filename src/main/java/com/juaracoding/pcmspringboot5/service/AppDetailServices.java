@@ -1,18 +1,23 @@
 package com.juaracoding.pcmspringboot5.service;
 
+import com.juaracoding.pcmspringboot5.config.JwtConfig;
 import com.juaracoding.pcmspringboot5.config.OtherConfig;
+import com.juaracoding.pcmspringboot5.dto.val.ValLoginDTO;
 import com.juaracoding.pcmspringboot5.dto.val.ValRegisDTO;
-import com.juaracoding.pcmspringboot5.dto.val.ValUserDTO;
 import com.juaracoding.pcmspringboot5.dto.val.ValVerifyRegisDTO;
 import com.juaracoding.pcmspringboot5.model.User;
 import com.juaracoding.pcmspringboot5.repo.UserRepo;
 import com.juaracoding.pcmspringboot5.security.BcryptImpl;
-import com.juaracoding.pcmspringboot5.utils.GlobalFunction;
+import com.juaracoding.pcmspringboot5.security.Crypto;
+import com.juaracoding.pcmspringboot5.security.JwtUtility;
 import com.juaracoding.pcmspringboot5.utils.GlobalResponse;
 import com.juaracoding.pcmspringboot5.utils.SendMailOTP;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,13 +33,16 @@ import java.util.Random;
  */
 @Service
 @Transactional
-public class AppDetailServices {
+public class AppDetailServices implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
 
     @Autowired
     Random rand ;
+
+    @Autowired
+    JwtUtility jwtUtility;
 
     //001-010
     public ResponseEntity<Object> regis(User user, HttpServletRequest request){
@@ -93,6 +101,47 @@ public class AppDetailServices {
         return new GlobalResponse().regisBerhasil();
     }
 
+    //021-030
+    public ResponseEntity<Object> login(User user, HttpServletRequest request){
+
+        Optional<User> op = null;
+        User userDB = null;
+        try{
+            if(user==null){
+                return new GlobalResponse().tidakDapatDiproses("TRN00FV021");
+            }
+            op = userRepo.findByUsernameAndIsRegistered(user.getUsername(),true);
+            if(op.isEmpty()){
+                return new GlobalResponse().userTidakTerdaftar("TRN00FV022");
+            }
+            userDB = op.get();
+            String strCombine = user.getUsername()+user.getPassword();
+            System.out.println(strCombine);
+            System.out.println(userDB.getPassword());
+            if(!BcryptImpl.verifyHash(strCombine,userDB.getPassword())){
+                return new GlobalResponse().usernameAtauPasswordSalah("TRN00FV023");
+            }
+
+        }catch(Exception e){
+            return new GlobalResponse().internalServerError("TRN00FE011");
+        }
+        Map<String,Object> payload = new HashMap<>();
+        payload.put("id",userDB.getId());
+        payload.put("hp",userDB.getNoHp());
+        payload.put("em",userDB.getEmail());
+        payload.put("naleng",userDB.getNamaLengkap());
+
+        String token = jwtUtility.doGenerateToken(payload,userDB.getUsername());
+        if(JwtConfig.getTokenEncryptEnable().equals("y")){
+            token = Crypto.performEncrypt(token);
+        }
+
+        Map<String,Object> data = new HashMap<>();
+        data.put("menu","SEBENTAR !!");
+        data.put("token",token);
+        return new GlobalResponse().loginBerhasil(data);
+    }
+
     public User mapToEntity(ValRegisDTO valRegisDTO){
         User user = new User();
         user.setNamaLengkap(valRegisDTO.getNamaLengkap());
@@ -103,11 +152,27 @@ public class AppDetailServices {
         user.setEmail(valRegisDTO.getEmail());
         return user;
     }
+    public User mapToEntity(ValLoginDTO valLoginDTO){
+        User user = new User();
+        user.setPassword(valLoginDTO.getPassword());
+        user.setUsername(valLoginDTO.getUsername());
+        return user;
+    }
 
     public User mapToEntity(ValVerifyRegisDTO valVerifyRegisDTO){
         User user = new User();
         user.setOtp(valVerifyRegisDTO.getOtp());
         user.setEmail(valVerifyRegisDTO.getEmail());
         return user;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Optional<User> op = userRepo.findByUsernameAndIsRegistered(username,true);
+        if(!op.isPresent()){
+            throw new UsernameNotFoundException(username);
+        }
+        User user = op.get();
+        return new org.springframework.security.core.userdetails.User(user.getUsername(),user.getPassword(),user.getAuthorities());
     }
 }

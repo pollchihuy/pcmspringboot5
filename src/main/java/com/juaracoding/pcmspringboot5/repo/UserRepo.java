@@ -17,6 +17,8 @@ public interface UserRepo extends JpaRepository<User,Long> {
 
     /** Khusus Untuk Verifikasi Registrasi */
     Optional<User> findByEmail(String value);
+    Optional<User> findByUsernameAndIsRegistered(String value, Boolean isValid);//=
+//    Optional<User> findByUsernameOOrNoHpOrEmailAndRegistered(String value,String value2,String value3,Boolean isValid);//=
 
     List<User> findByNamaLengkapContains(String nama);
     List<User> findByEmailContains(String nama);
