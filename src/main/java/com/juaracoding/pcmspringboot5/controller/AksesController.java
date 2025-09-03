@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,11 +21,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("akses")
 public class AksesController {
 
+    /** Deklarasi DI Object Akses Service */
     @Autowired
     private AksesService aksesService;
 
     @PostMapping
     public ResponseEntity<Object> save(@Valid @RequestBody ValAksesDTO valAksesDTO, HttpServletRequest request) {
+        
         return aksesService.save(aksesService.mapToEntity(valAksesDTO),request);
     }
 

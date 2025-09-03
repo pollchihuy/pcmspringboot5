@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,17 +27,20 @@ public class GroupMenuController {
     private GroupMenuService groupMenuService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> save(@Valid @RequestBody ValGroupMenuDTO valGroupMenuDTO, HttpServletRequest request) {
         return groupMenuService.save(groupMenuService.mapToEntity(valGroupMenuDTO),request);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> update(@Valid @RequestBody ValGroupMenuDTO valGroupMenuDTO,
                                          @PathVariable Long id, HttpServletRequest request) {
         return groupMenuService.update(id,groupMenuService.mapToEntity(valGroupMenuDTO),request);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> delete(@PathVariable Long id, HttpServletRequest request) {
         return groupMenuService.delete(id,request);
     }
@@ -46,11 +50,13 @@ public class GroupMenuController {
      * @return
      */
     @GetMapping
+    @PreAuthorize("hasAuthority('Cumi')")
     public ResponseEntity<Object> findAll(HttpServletRequest request){
         return groupMenuService.findAll(request);
     }
 
     @GetMapping("/{sort}/{sort_by}/{page}")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> findByParam(
             @PathVariable String sort,
             @PathVariable(value = "sort_by") String sortBy,
@@ -81,16 +87,19 @@ public class GroupMenuController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> findById(@PathVariable Long id, HttpServletRequest request) {
         return groupMenuService.findById(id,request);
     }
 
     @PostMapping("/upload-excel")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> uploadExcel(@RequestParam MultipartFile file, HttpServletRequest request) {
         return groupMenuService.uploadExcel(file,request);
     }
 
     @GetMapping("/excel")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public Object downloadExcel(
             @RequestParam String column,
             @RequestParam String value,
@@ -99,6 +108,7 @@ public class GroupMenuController {
     }
 
     @GetMapping("/pdf")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public Object downloadPDF(
             @RequestParam String column,
             @RequestParam String value,
