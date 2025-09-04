@@ -139,8 +139,8 @@ public class MenuService implements IService<Menu>, IReport<Menu> {
                     transformPagination(
                             entityToDTO(page.getContent()),
                             page,
-                            "id",
-                            ""
+                            column,
+                            value
                     );
         }catch (Exception e){
             return new GlobalResponse().internalServerError("TRN02FE041");
@@ -160,7 +160,7 @@ public class MenuService implements IService<Menu>, IReport<Menu> {
         }catch (Exception e){
             return new GlobalResponse().internalServerError("TRN02FE051");
         }
-        return new GlobalResponse().dataDitemukan(menuDB);
+        return new GlobalResponse().dataDitemukan(entityToDTO(menuDB));
     }
 
     @Override
@@ -283,5 +283,14 @@ public class MenuService implements IService<Menu>, IReport<Menu> {
             listDTO.add(respMenuDTO);
         }
         return listDTO;
+    }
+    public RespMenuDTO entityToDTO(Menu menu){
+        RespMenuDTO respMenuDTO = new RespMenuDTO();
+        respMenuDTO.setNama(menu.getNama());
+        respMenuDTO.setPath(menu.getPath());
+        respMenuDTO.setId(menu.getId());
+        respMenuDTO.setIdGroupMenu(menu.getGroupMenu().getId());
+        respMenuDTO.setNamaGroupMenu(menu.getGroupMenu().getNama());
+        return respMenuDTO;
     }
 }

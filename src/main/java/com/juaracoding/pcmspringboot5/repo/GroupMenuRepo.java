@@ -19,6 +19,8 @@ public interface GroupMenuRepo extends JpaRepository<GroupMenu, Long> {
 
     /** SELECT TOP 1 *  FROM MstGroupMenu ORDER BY ID DESC; */
     Optional<GroupMenu> findTop1ByOrderByIdDesc();
+
+//    Integer countAllById();
 //    Page<GroupMenu> findByDeskripsiContains(Pageable pageable, String nama);
 //    Page<GroupMenu> findByPathContainsAndDeskripsiContains(Pageable pageable, String value,String value2);
 }

@@ -20,6 +20,7 @@ public interface UserRepo extends JpaRepository<User,Long> {
     Optional<User> findByUsernameAndIsRegistered(String value, Boolean isValid);//=
 //    Optional<User> findByUsernameOOrNoHpOrEmailAndRegistered(String value,String value2,String value3,Boolean isValid);//=
 
+    Optional<User> findTop1ByOrderByIdDesc();
     List<User> findByNamaLengkapContains(String nama);
     List<User> findByEmailContains(String nama);
     List<User> findByNoHpContains(String nama);

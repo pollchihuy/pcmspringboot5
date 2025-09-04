@@ -138,8 +138,8 @@ public class AksesService implements IService<Akses>, IReport<Akses> {
                     transformPagination(
                             entityToDTO(page.getContent()),
                             page,
-                            "id",
-                            ""
+                            column,
+                            value
                     );
         }catch (Exception e){
             return new GlobalResponse().internalServerError("TRN03FE041");
@@ -159,7 +159,7 @@ public class AksesService implements IService<Akses>, IReport<Akses> {
         }catch (Exception e){
             return new GlobalResponse().internalServerError("TRN03FE051");
         }
-        return new GlobalResponse().dataDitemukan(aksesDB);
+        return new GlobalResponse().dataDitemukan(entityToDTO(aksesDB));
     }
 
     @Override
@@ -277,5 +277,13 @@ public class AksesService implements IService<Akses>, IReport<Akses> {
             listDTO.add(respAksesDTO);
         }
         return listDTO;
+    }
+
+    public RespAksesDTO entityToDTO(Akses akses){
+        RespAksesDTO respAksesDTO = new RespAksesDTO();
+        respAksesDTO.setNama(akses.getNama());
+        respAksesDTO.setId(akses.getId());
+
+        return respAksesDTO;
     }
 }

@@ -1,8 +1,12 @@
 package com.juaracoding.pcmspringboot5.controller;
 
+
 import com.juaracoding.pcmspringboot5.config.OtherConfig;
-import com.juaracoding.pcmspringboot5.model.GroupMenu;
-import com.juaracoding.pcmspringboot5.repo.GroupMenuRepo;
+import com.juaracoding.pcmspringboot5.dto.relation.RelMenuDTO;
+import com.juaracoding.pcmspringboot5.model.Akses;
+import com.juaracoding.pcmspringboot5.model.Menu;
+import com.juaracoding.pcmspringboot5.repo.AksesRepo;
+import com.juaracoding.pcmspringboot5.repo.MenuRepo;
 import com.juaracoding.pcmspringboot5.utils.DataGenerator;
 import com.juaracoding.pcmspringboot5.utils.TokenGenerator;
 import io.restassured.http.Method;
@@ -18,33 +22,35 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+
 import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
+public class AksesControllerTest extends AbstractTestNGSpringContextTests {
 
     @Autowired
-    private GroupMenuRepo groupMenuRepo;
+    private AksesRepo aksesRepo;
+
+    @Autowired
+    private MenuRepo menuRepo;
 
     private JSONObject req;
-    private GroupMenu groupMenu;
+    private Akses akses;
     private Random rand ;
     private String token;
     private DataGenerator dataGenerator;
-    private  Optional<GroupMenu> op ;
+    private List<Menu> listMenu;
     @BeforeClass
     private void init(){
         token = new TokenGenerator(AuthControllerTest.authorization).getToken();
         rand  = new Random();
         req = new JSONObject();
-        groupMenu = new GroupMenu();
+        akses = new Akses();
         dataGenerator = new DataGenerator();
-        op = groupMenuRepo.findTop1ByOrderByIdDesc();
-        groupMenu = op.get();
+        Optional<Akses> op = aksesRepo.findTop1ByOrderByIdDesc();
+        listMenu = menuRepo.findAll();/** mengambil data menu untuk diinput ke data akses nantinya*/
+        akses = op.get();
     }
 
     @BeforeTest
@@ -55,25 +61,35 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
     @Test(priority = 0)
     void save(){
         Response response ;
+        String nama = dataGenerator.dataNamaTim();
         try{
-            req.put("nama", dataGenerator.genDataAlfabet(5,31));
+            req.put("nama", nama);
+            List<RelMenuDTO> menuList = new ArrayList<>();
+            for (Menu m:
+                listMenu) {
+                RelMenuDTO relMenuDTO = new RelMenuDTO();
+                relMenuDTO.setId(m.getId());
+                menuList.add(relMenuDTO);
+            }
+            req.put("menu_list",menuList);
 
             response = given().
                     header("Content-Type","application/json").
                     header("accept","*/*").
                     header(AuthControllerTest.AUTH_HEADER,token).
                     body(req).
-                    request(Method.POST,"group-menu");
+                    request(Method.POST,"akses");
 
             int intResponse = response.getStatusCode();
             JsonPath jsonPath = response.jsonPath();
+            System.out.println(response.getBody().prettyPrint());
             Assert.assertEquals(intResponse,201);
             Assert.assertEquals(jsonPath.getString("message"),"Data Berhasil Disimpan");
             Assert.assertNotNull(jsonPath.getString("data"));
             Assert.assertTrue(Boolean.parseBoolean(jsonPath.getString("success")));
             Assert.assertNotNull(jsonPath.getString("timestamp"));
         }catch (Exception e){
-            System.out.println(e.getMessage());
+            System.out.println("Error : "+e.getMessage());
             Assert.assertNotNull(null);//untuk menyatakan bahwa ini error atau diskip
         }
     }
@@ -83,18 +99,32 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
         Response response ;
         req.clear();
         try{
-            String reqNama = dataGenerator.genDataAlfabet(5,30);
+            String reqNama = dataGenerator.dataNamaTim();
+            List<RelMenuDTO> menuList = new ArrayList<>();
+            /** jika ingin melakukan perbedaan data di relasi many to many nya ,
+             * gunakan break misalkan pada loop ke 3, jadi saat save dia dapat semua menu
+             * tetapi di update menjadi 3 menu saja
+             */
+            for (Menu m:
+                    listMenu) {
+                RelMenuDTO relMenuDTO = new RelMenuDTO();
+                relMenuDTO.setId(m.getId());
+                menuList.add(relMenuDTO);
+            }
+
             System.out.println("ReqNama : "+reqNama);
-            groupMenu.setNama(reqNama);
+            akses.setNama(reqNama);
+            akses.setMenuList(akses.getMenuList());
 
             req.put("nama", reqNama);
+            req.put("menu_list", menuList);
 
             response = given().
                     header("Content-Type","application/json").
                     header("accept","*/*").
                     header(AuthControllerTest.AUTH_HEADER,token).
                     body(req).
-                    request(Method.PUT,"/group-menu/"+groupMenu.getId());
+                    request(Method.PUT,"akses/"+ akses.getId());
 
             int intResponse = response.getStatusCode();
             JsonPath jsonPath = response.jsonPath();
@@ -118,15 +148,15 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
                     header("Content-Type","application/json").
                     header("accept","*/*").
                     header(AuthControllerTest.AUTH_HEADER,token).
-                    request(Method.GET,"/group-menu/"+groupMenu.getId());
+                    request(Method.GET,"/akses/"+ akses.getId());
 
             int intResponse = response.getStatusCode();
             JsonPath jsonPath = response.jsonPath();
-            System.out.println(response.getBody().prettyPrint());
+//            System.out.println(response.getBody().prettyPrint());
             Assert.assertEquals(intResponse,200);
             Assert.assertEquals(jsonPath.getString("message"),"Data Ditemukan");
-            Assert.assertEquals(Long.parseLong(jsonPath.getString("data.id")),groupMenu.getId());
-            Assert.assertEquals(jsonPath.getString("data.nama"),groupMenu.getNama());
+            Assert.assertEquals(Long.parseLong(jsonPath.getString("data.id")), akses.getId());
+            Assert.assertEquals(jsonPath.getString("data.nama"), akses.getNama());
             Assert.assertTrue(Boolean.parseBoolean(jsonPath.getString("success")));
             Assert.assertNotNull(jsonPath.getString("timestamp"));
         }catch (Exception e){
@@ -143,12 +173,13 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
                     header("Content-Type","application/json").
                     header("accept","*/*").
                     header(AuthControllerTest.AUTH_HEADER,token).
-                    request(Method.GET,"/group-menu");
+                    request(Method.GET,"/akses");
 
             int intResponse = response.getStatusCode();
             JsonPath jsonPath = response.jsonPath();
+            List ltData = jsonPath.getList("data.content");
+            long intData =  aksesRepo.count();
 //            System.out.println(response.getBody().prettyPrint());
-            long intData = groupMenuRepo.count();
             Assert.assertEquals(intResponse,200);
             Assert.assertEquals(jsonPath.getString("message"),"Data Ditemukan");
             Assert.assertTrue(Boolean.parseBoolean(jsonPath.getString("success")));
@@ -162,6 +193,7 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
             Assert.assertEquals(Integer.parseInt(jsonPath.getString("data.size_per_page")), OtherConfig.getDefaultPaginationSize());
             Assert.assertEquals(jsonPath.getString("data.value"),"");
             Assert.assertEquals(Integer.parseInt(jsonPath.getString("data.total_data")),intData);
+
         }catch (Exception e){
             System.out.println(e.getMessage());
             Assert.assertNotNull(null);//untuk menyatakan bahwa ini error atau diskip
@@ -171,8 +203,8 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
     @Test(priority = 40)
     void findByParam(){
         Response response ;
-        String pathVariable = "/group-menu/asc/id/0";
-        String strValue = groupMenu.getNama();
+        String pathVariable = "/akses/asc/id/0";
+        String strValue = akses.getNama();
 
         try{
             response = given().
@@ -207,7 +239,8 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
 // ======================================================================================================================================================
 
             Assert.assertEquals(map.get("nama"),strValue);
-            Assert.assertEquals(Long.parseLong(map.get("id").toString()),groupMenu.getId());
+            Assert.assertEquals(Long.parseLong(map.get("id").toString()), akses.getId());
+
         }catch (Exception e){
             System.out.println(e.getMessage());
             Assert.assertNotNull(null);//untuk menyatakan bahwa ini error atau diskip
@@ -222,9 +255,9 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
                     header("Content-Type","multipart/form-data").
                     header("accept","*/*").
                     header(AuthControllerTest.AUTH_HEADER,token).
-                    multiPart("file",new File(System.getProperty("user.dir")+"/src/test/resources/data-test/group-menu.xlsx"),
+                    multiPart("file",new File(System.getProperty("user.dir")+"/src/test/resources/data-test/akses.xlsx"),
                             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").
-                    request(Method.POST,"group-menu/upload-excel");
+                    request(Method.POST,"akses/upload-excel");
 
             int intResponse = response.getStatusCode();
             JsonPath jsonPath = response.jsonPath();
@@ -247,8 +280,8 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
                     header("accept","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet").
                     header(AuthControllerTest.AUTH_HEADER,token).
                     params("column","nama").
-                    params("value",groupMenu.getNama()).
-                    request(Method.GET,"group-menu/excel");
+                    params("value", akses.getNama()).
+                    request(Method.GET,"akses/excel");
 
             int intResponse = response.getStatusCode();
             Assert.assertEquals(intResponse,200);
@@ -270,8 +303,8 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
                     header("accept","application/pdf").
                     header(AuthControllerTest.AUTH_HEADER,token).
                     params("column","nama").
-                    params("value",groupMenu.getNama()).
-                    request(Method.GET,"group-menu/pdf");
+                    params("value", akses.getNama()).
+                    request(Method.GET,"akses/pdf");
 
             int intResponse = response.getStatusCode();
             Assert.assertEquals(intResponse,200);
@@ -292,7 +325,7 @@ public class GroupMenuControllerTest extends AbstractTestNGSpringContextTests {
                     header("Content-Type","application/json").
                     header("accept","*/*").
                     header(AuthControllerTest.AUTH_HEADER,token).
-                    request(Method.DELETE,"/group-menu/"+groupMenu.getId());
+                    request(Method.DELETE,"/akses/"+ akses.getId());
 
             int intResponse = response.getStatusCode();
             JsonPath jsonPath = response.jsonPath();

@@ -3,8 +3,10 @@
 <suite name="Suite Semua">
     <test name="Test-All">
         <classes>
-            <class name="com.juaracoding.pcmspringboot5.coretan.FungsiStringTest"></class>
-            <class name="com.juaracoding.pcmspringboot5.coretan.FungsiAritmatikaTest"></class>
+            <class name="com.juaracoding.pcmspringboot5.controller.AuthControllerTest"></class>
+            <class name="com.juaracoding.pcmspringboot5.controller.GroupMenuControllerTest"></class>
+            <class name="com.juaracoding.pcmspringboot5.controller.MenuControllerTest"></class>
+            <class name="com.juaracoding.pcmspringboot5.controller.AksesControllerTest"></class>
         </classes>
     </test>
 </suite>

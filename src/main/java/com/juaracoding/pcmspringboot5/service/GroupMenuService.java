@@ -1,5 +1,6 @@
 package com.juaracoding.pcmspringboot5.service;
 
+import com.juaracoding.pcmspringboot5.config.OtherConfig;
 import com.juaracoding.pcmspringboot5.core.IReport;
 import com.juaracoding.pcmspringboot5.core.IService;
 import com.juaracoding.pcmspringboot5.dto.resp.RespGroupMenuDTO;
@@ -100,7 +101,7 @@ public class GroupMenuService implements IService<GroupMenu>, IReport<GroupMenu>
     }
 
     public ResponseEntity<Object> findAll(HttpServletRequest request){
-        Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
+        Pageable pageable = PageRequest.of(0, OtherConfig.getDefaultPaginationSize(), Sort.by("id"));
         Page<GroupMenu> page = null;
         Map<String,Object> mapResponse = null;
 
@@ -144,8 +145,8 @@ public class GroupMenuService implements IService<GroupMenu>, IReport<GroupMenu>
                     transformPagination(
                             entityToDTO(page.getContent()),
                             page,
-                            "id",
-                            ""
+                            column,
+                            value
                     );
         }catch (Exception e){
             return new GlobalResponse().internalServerError("TRN01FE041");

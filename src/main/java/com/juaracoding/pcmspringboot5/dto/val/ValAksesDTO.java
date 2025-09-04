@@ -1,6 +1,7 @@
 package com.juaracoding.pcmspringboot5.dto.val;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.juaracoding.pcmspringboot5.dto.relation.RelMenuDTO;
 import com.juaracoding.pcmspringboot5.model.Menu;
 import jakarta.persistence.*;
@@ -14,6 +15,7 @@ public class ValAksesDTO {
 
     private String nama;
 
+    @JsonProperty("menu_list")
     private List<RelMenuDTO> menuList;
 
     public String getNama() {

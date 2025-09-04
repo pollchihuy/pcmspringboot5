@@ -50,7 +50,7 @@ public class GroupMenuController {
      * @return
      */
     @GetMapping
-    @PreAuthorize("hasAuthority('Cumi')")
+    @PreAuthorize("hasAuthority('Group-Menu')")
     public ResponseEntity<Object> findAll(HttpServletRequest request){
         return groupMenuService.findAll(request);
     }
